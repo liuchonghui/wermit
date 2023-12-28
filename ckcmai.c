@@ -667,6 +667,7 @@ char uidbuf[UIDBUFLEN] = { NUL, NUL };  /* User ID buffer */
 int cfilef = 0;                         /* Application ("kerbang") file flag */
 char cmdfil[CKMAXPATH + 1] = { NUL, NUL }; /* Application file name */
 int haveurl = 0;                        /* URL given on command line */
+int haverc = 0;                        /* rc file given on command line */
 
 #ifndef NOXFER
 /* Multi-protocol support */
@@ -3007,15 +3008,18 @@ main(argc,argv) int argc; char **argv;
 /* setbuf has to be called on the file descriptor before it is used */
 
 #ifdef UNIX
+  printf("ckcmai::main() #ifdef UNIX\n");
 #ifdef NONOSETBUF			/* Unbuffered console i/o */
     unbuf++;				/* as a compile-time option */
 #endif	/* NONOSETBUF */
     if (!unbuf) {			/* Or as a command-line selection */
 	int i, n;			/* We have to pre-pre-scan for */
 	char * s;			/* this one. */
+  printf("ckcmai::main() check argv\n");
 	for (i = 1; i < argc; i++) {
 	    s = argv[i];
 	    if (!s) n = 0; else n = (int)strlen(s);
+      printf("ckcmai::main() s=%s\n", s);
 	    if (n > 4) {
 		if (!ckstrcmp("--unbuffered",s,n,0)) {
 		    unbuf++;
@@ -3046,6 +3050,7 @@ main(argc,argv) int argc; char **argv;
 #endif /* NT */
     zstrip(argv[0],&p);                 /* Get name we were invoked with */
     makestr(&myname,p);
+    printf("ckumai::main() after makestr, myname=%s\n", myname);
     if (!ckstrcmp(myname,"telnet",-1,0))       howcalled = I_AM_TELNET;
 #ifdef CK_KERBEROS
     else if (!ckstrcmp(myname,"ktelnet",-1,0)) howcalled = I_AM_TELNET;
@@ -3085,6 +3090,7 @@ main(argc,argv) int argc; char **argv;
     cmdini();                           /* Must come before prescan */
     debug(F100,"main cmdini() done","",0);
 #endif /* NOICP */
+    printf("ckumai::main() call prescan(0)\n");
     prescan(0);                         /* Pre-Check for debugging, etc */
 #endif /* MAC */
     debug(F101,"MAIN feol","",feol);

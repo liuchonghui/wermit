@@ -1100,6 +1100,7 @@ conect() {
     int oldprt = 0;			/* Used with printing */
     int msgflg = 0;
     char cbuf[2];			/* Ditto */
+    printf("ckucns::connect()\n");
 
 #ifdef BEBOX
     int tid = 0;			/* Thread ID */
@@ -1272,6 +1273,7 @@ conect() {
 	;
 
     if (msgflg) {
+      printf("msgflg=%d\n",msgflg);
 #ifdef NETCONN
 	if (network) {
 #ifdef CK_ENCRYPTION
@@ -1286,7 +1288,7 @@ conect() {
 		printf("Connecting to host %s",ttname);
 	} else {
 #endif /* NETCONN */
-	    printf("Connecting to %s",ttname);
+	    printf("Connecting 2 %s",ttname);
 	    if (speed > -1L) printf(", speed %ld",speed);
 #ifdef NETCONN
 	}
@@ -1310,7 +1312,7 @@ conect() {
 	      default:
 		s = "binary";
 	    }
-	    printf("Session Log: %s, %s (%d) \r\n",sesfil,s,sessft);
+	    printf("Session Log: %s, [slogts:%d %s] [sessft:%d] \r\n",sesfil,slogts,s,sessft);
 	}
 	if (debses) printf("Debugging Display...)\r\n");
     }

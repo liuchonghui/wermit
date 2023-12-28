@@ -701,6 +701,7 @@ int
 cmdlin() {
     char x;                             /* Local general-purpose char */
     extern int haveurl;
+    extern int haverc;
 
 #ifdef NEWFTP
     char * port = NULL;
@@ -1545,14 +1546,18 @@ cmdlin() {
 		xbuf[28] = '.';
 	    }
 	    xbuf[31] = NUL;
+        if (!haverc) {
             ckmakmsg(buf,
-		     128,
-		     "invalid command-line option, type \"",
-		     myname,
-		     " -h\" for help",
-		     NULL
-		     );
-	    fatal2(xbuf,buf);
+             128,
+             "invalid command-line option, type \"",
+             myname,
+             " -h\" for help",
+             NULL
+             );
+            fatal2(xbuf,buf);
+        } else {
+            printf("command-line have rc file\n");
+        }
         }
     }
 #ifdef DEBUG

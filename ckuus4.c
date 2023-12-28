@@ -1533,6 +1533,7 @@ prescan(dummy) int dummy; {             /* Arg is ignored. */
     int yargc; char **yargv;
     char x;
     char *yp, *yy;
+    extern int haverc;
 #ifdef DEBUG
     int debcount = 0;
 #endif /* DEBUG */
@@ -1552,6 +1553,14 @@ prescan(dummy) int dummy; {             /* Arg is ignored. */
         fatal("prescan: no memory for kermrc");
 #endif /* DCMDBUF */
     ckstrncpy(kermrc,KERMRC,KERMRCL);   /* Default init file name */
+    printf("ckuus4::prescan(%d) default kermrc=%s yargc=%d\n", dummy, kermrc, yargc);
+    if (yargc == 3 && !strcmp(yargv[1], "--rc")) {
+        snprintf(kermrc, KERMRCL, "%s", yargv[2]);
+        printf("ckuus4::prescan() assign kermrc=%s from --rc %s\n", kermrc, yargv[2]);
+        haverc = 1;
+        return;
+    }
+
 #endif /* NOICP */
 
 #ifdef OS2
@@ -1618,7 +1627,7 @@ prescan(dummy) int dummy; {             /* Arg is ignored. */
 			      case '+':
 			      case '-':
                                 if (doxarg(yargv,1) < 0) {
-                                    fatal("Extended argument error");
+                                    fatal("Extended argument error.");
                                 }
                                 yp = "";
                                 break;
@@ -1722,7 +1731,7 @@ prescan(dummy) int dummy; {             /* Arg is ignored. */
 		      case '+':
 		      case '-':
                         if (doxarg(yargv,1) < 0) {
-                            fatal("Extended argument error");
+                            fatal("Extended argument error..");
                         }
                         yp = "";
                         break;
@@ -1829,7 +1838,7 @@ prescan(dummy) int dummy; {             /* Arg is ignored. */
                   case '+':
                   case '-':
                     if (doxarg(yargv,1) < 0) {
-                        fatal("Extended argument error");
+                        fatal("Extended argument error...");
                     }
 #ifndef COMMENT				/* Jeff 28 Apr 2003 */
                     yp = NULL;		/* (not "") */
@@ -2218,6 +2227,8 @@ doconect(q,async) int q, async; {
 #endif /* KUI */
     x = conect(async);                  /* Connect the first time */
 #else /* OS2 */
+    dolog(2);
+    printf("ckuus4::doconect() call conect() #1\n");
     x = conect();
 #endif /* OS2 */
     debok = 1;
@@ -2345,6 +2356,7 @@ doconect(q,async) int q, async; {
 #endif /* CK_AUTODL */
 #endif /* IKS_OPTION */
 #ifndef OS2
+            printf("ckuus4::doconect() call conect() #2\n");
             x = conect();               /* Re-CONNECT. */
 #else /* OS2 */
             x = conect(0);
@@ -3682,6 +3694,7 @@ int
 dolog(x) int x; {
     int y, disp; char *s = NULL, * p = NULL, * q = NULL;
     extern int isguest;
+    char seslog_path[256];
 #ifdef ZFNQFP
     struct zfnfp * fnp;
 #endif /* ZFNQFP */
@@ -3707,6 +3720,9 @@ dolog(x) int x; {
 #ifndef NOLOCAL
       case LOGS:
         q = "session.log";
+        snprintf(seslog_path, 255, "%s%s", strrchr(ttname, '/') + 1, ".log");
+        q = seslog_path;
+        printf("seslog_path=%s\n", q);
         y = cmofi("Name of session log file",q,&s,xxstring);
         break;
 #endif /* NOLOCAL */
